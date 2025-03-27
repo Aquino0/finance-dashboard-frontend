@@ -1,7 +1,13 @@
-
-FROM node:18
+# Etapa 1: build da aplicação
+FROM node:18 AS builder
 WORKDIR /app
 COPY . .
-RUN npm install && npm run build
-RUN npm install -g serve
-CMD ["serve", "-s", "dist", "-l", "3000"]
+RUN npm install
+RUN npm run build
+
+# Etapa 2: servir os arquivos com nginx
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
