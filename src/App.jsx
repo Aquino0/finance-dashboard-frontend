@@ -17,10 +17,12 @@ function App() {
   const [erro, setErro] = useState("");
   const [historico, setHistorico] = useState([]);
   const [dadosGrafico, setDadosGrafico] = useState([]);
+  const [carregando, setCarregando] = useState(false);
 
   const consultar = async () => {
     setErro("");
     setResultado(null);
+    setCarregando(true);
     const codigoFormatado = codigo.toUpperCase();
 
     try {
@@ -38,6 +40,8 @@ function App() {
       }
     } catch {
       setErro("Erro de conexão com o servidor.");
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -102,69 +106,77 @@ function App() {
           }}
         />
 
-        <button onClick={consultar}>Consultar</button>
+        <button onClick={consultar} disabled={carregando}>
+          {carregando ? "Consultando..." : "Consultar"}
+        </button>
       </div>
 
-      {erro && <div className="erro">Erro: {erro}</div>}
-
-      {resultado && (
-        <div className="resultado">
-          <h3>Resultado</h3>
-          <p><strong>Nome:</strong> {resultado.nome}</p>
-          <p>
-            <strong>Preço:</strong>{" "}
-            <span style={{ color: corVariação(resultado.variacao) }}>
-              {formatarPreco(resultado.preco)} {emojiVariação(resultado.variacao)}
-            </span>
-          </p>
+      {carregando ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Carregando dados...</p>
         </div>
-      )}
-
-      {dadosGrafico && dadosGrafico.length > 0 && (
-        <div className="grafico">
-          <h2>Gráfico (90 dias)</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dadosGrafico}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="data" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="preco" stroke="#007bff" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-
-      {historico.length > 0 && (
-        <div className="historico">
-          <h2>Histórico de Consultas</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th>Código</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Variação</th>
-              </tr>
-            </thead>
-            <tbody>
-              {historico.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.data_consulta.split(" ")[0]}</td>
-                  <td>{item.tipo}</td>
-                  <td>{item.codigo}</td>
-                  <td>{item.nome}</td>
-                  <td>{formatarPreco(item.preco)}</td>
-                  <td style={{ color: corVariação(item.variacao) }}>
-                    {item.variacao} {emojiVariação(item.variacao)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      ) : (
+        <>
+          {erro && <div className="erro">Erro: {erro}</div>}
+          {resultado && (
+            <div className="resultado">
+              <h3>Resultado</h3>
+              <p><strong>Nome:</strong> {resultado.nome}</p>
+              <p>
+                <strong>Preço:</strong>{" "}
+                <span style={{ color: corVariação(resultado.variacao) }}>
+                  {formatarPreco(resultado.preco)} {emojiVariação(resultado.variacao)}
+                </span>
+              </p>
+            </div>
+          )}
+          {dadosGrafico && dadosGrafico.length > 0 && (
+            <div className="grafico">
+              <h2>Gráfico (90 dias)</h2>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={dadosGrafico}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="data" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="preco" stroke="#007bff" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+          {historico.length > 0 && (
+            <div className="historico">
+              <h2>Histórico de Consultas</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Variação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {historico.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.data_consulta.split(" ")[0]}</td>
+                      <td>{item.tipo}</td>
+                      <td>{item.codigo}</td>
+                      <td>{item.nome}</td>
+                      <td>{formatarPreco(item.preco)}</td>
+                      <td style={{ color: corVariação(item.variacao) }}>
+                        {item.variacao} {emojiVariação(item.variacao)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
