@@ -72,16 +72,7 @@ docker-compose up --build
 [LinkedIn](https://www.linkedin.com/in/%F0%9F%8E%AF-cristopher-aquino-4992b251/)  
 Contato: (21) 98005-9430
 
----
-
-## 🌐 Considerações
-
-- Todos os dados exibidos são consumidos de fontes **públicas**.
-- O frontend foi projetado para ser **intuitivo**, responsivo e de fácil leitura.
-- Requisições e erros são tratados para garantir boa experiência ao usuário.
-
----
 
 Para o backend, veja o arquivo [`backend/README.md`](../backend/README.md).
 
----
+

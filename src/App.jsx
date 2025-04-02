@@ -1,3 +1,4 @@
+// App.jsx atualizado
 import React, { useState, useEffect } from "react";
 import {
   LineChart,
@@ -49,6 +50,7 @@ function App() {
     try {
       const res = await fetch("http://localhost:8000/historico");
       const data = await res.json();
+      console.log("Histórico recebido:", data);
       setHistorico(data);
     } catch {
       setHistorico([]);
@@ -160,9 +162,9 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  {historico.map((item) => (
+                 {historico.map((item) => (
                     <tr key={item.id}>
-                      <td>{item.data_consulta.split(" ")[0]}</td>
+                      <td>{item.data_consulta}</td>
                       <td>{item.tipo}</td>
                       <td>{item.codigo}</td>
                       <td>{item.nome}</td>
